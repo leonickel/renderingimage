@@ -34,19 +34,19 @@ public class VideoDAOImpl implements VideoDAO {
 	public VideoDetails getVideo(String videoId, String timestamp, String authentication) throws Exception {
 		//https://api-qa.video-cdn.net/v1/vms/{VIDEO_MANAGER_ID}/videos/{VIDEO_ID}
 		String url = PropertyFinder.getPropertyValue(VIDEO_URL).replace("{VIDEO_MANAGER_ID}", "5").replace("{VIDEO_ID}", videoId);
-		System.out.println(url);
 		final HttpGet method = createGetMethod(url, getAuthenticationHeader(authentication));
+		System.out.println("about to executing get method " + method.getURI());
 		final CloseableHttpResponse response = httpClient.execute(method);
+		System.out.println("get method executed");
 		final VideoDetails videoDetails = gson.fromJson(new InputStreamReader(response.getEntity().getContent()), VideoDetails.class);
+		response.close();
 		return filterStillsByTimestamp(videoDetails, timestamp);
 	}
 	
 	private VideoDetails filterStillsByTimestamp(VideoDetails videoDetails, String timestamp) {
-		//i-qa.video-cdn.net/4mCgfj9bRTixcftZ4hVAMG/22157.20003.360p.JPEG
 		final List<Still> filteredStills = new ArrayList<Still>();
 		for(Still still : videoDetails.getStills()) {
 			final String info = still.getUrl().substring(still.getUrl().lastIndexOf("/")+1);
-			System.out.println(info);
 			if(info.split("\\.")[1].equals(timestamp)) {
 				filteredStills.add(still);
 			}

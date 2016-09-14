@@ -1,11 +1,9 @@
 package com.leonickel.renderingimage.service.impl;
 
 import java.net.URL;
-import java.nio.ByteBuffer;
 
 import org.apache.commons.io.IOUtils;
 
-import com.google.common.primitives.Bytes;
 import com.google.inject.Singleton;
 import com.leonickel.renderingimage.model.Still;
 import com.leonickel.renderingimage.model.VideoDetails;
@@ -20,9 +18,8 @@ public class ResponseServiceImpl implements ResponseService {
 			return getDefaultImage(videoDetails);
 		}
 		for(Still still : videoDetails.getStills()) {
-			System.out.println(still.getUrl());
 			if(still.getUrl().contains(getHeighDimensionFormat(heightDimension))) {
-				return Bytes.concat(IOUtils.toByteArray(new URL("http:" + still.getUrl())));
+				return IOUtils.toByteArray(new URL("http:" + still.getUrl()));
 			}
 		}
 		
