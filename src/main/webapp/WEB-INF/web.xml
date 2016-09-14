@@ -17,9 +17,19 @@
 		<param-value>/</param-value>
 	</context-param>
 
+	<!-- 
 	<listener>
 		<listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
 	</listener>
+	 -->
+	 
+	<context-param>
+        <param-name>resteasy.guice.modules</param-name>
+        <param-value>com.leonickel.renderingimage.util.RestModule</param-value>
+    </context-param>
+      <listener>
+        <listener-class>org.jboss.resteasy.plugins.guice.GuiceResteasyBootstrapServletContextListener</listener-class>
+    </listener>
 
 	<servlet>
 		<servlet-name>resteasy-servlet</servlet-name>
