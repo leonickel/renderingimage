@@ -16,6 +16,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.StandardHttpRequestRetryHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.inject.Singleton;
@@ -29,15 +31,16 @@ public class VideoDAOImpl implements VideoDAO {
 
 	private Gson gson = new Gson();
 	private CloseableHttpClient httpClient = createHttpClient();
+	private Logger logger = LoggerFactory.getLogger(VideoDAOImpl.class);
 	
 	@Override
 	public VideoDetails getVideo(String videoId, String timestamp, String authentication) throws Exception {
 		//https://api-qa.video-cdn.net/v1/vms/{VIDEO_MANAGER_ID}/videos/{VIDEO_ID}
 		String url = PropertyFinder.getPropertyValue(VIDEO_URL).replace("{VIDEO_MANAGER_ID}", "5").replace("{VIDEO_ID}", videoId);
 		final HttpGet method = createGetMethod(url, getAuthenticationHeader(authentication));
-		System.out.println("about to executing get method " + method.getURI());
+		logger.info("executing get method, uri: [{}]", method.getURI());
 		final CloseableHttpResponse response = httpClient.execute(method);
-		System.out.println("get method executed");
+		logger.info("sucessfull get method executed");
 		final VideoDetails videoDetails = gson.fromJson(new InputStreamReader(response.getEntity().getContent()), VideoDetails.class);
 		response.close();
 		return filterStillsByTimestamp(videoDetails, timestamp);

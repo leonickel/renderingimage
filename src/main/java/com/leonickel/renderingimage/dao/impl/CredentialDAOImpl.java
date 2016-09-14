@@ -20,6 +20,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.StandardHttpRequestRetryHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -36,6 +38,7 @@ public class CredentialDAOImpl implements CredentialDAO {
 
 	private Gson gson = new Gson();
 	private CloseableHttpClient httpClient = createHttpClient();
+	private Logger logger = LoggerFactory.getLogger(CredentialDAOImpl.class);
 	
 	final LoadingCache<String, CredentialResponse> credentialCache = 
 	         CacheBuilder.newBuilder()
@@ -51,16 +54,18 @@ public class CredentialDAOImpl implements CredentialDAO {
 	
 	@Override
 	public CredentialResponse getCredential() throws Exception {
-		System.out.println("getting credential from cache");
+		logger.info("getting acesstoken from cache");
 		return credentialCache.get("credential");
 	}
 	
 	private CredentialResponse loadCredential(String credential) throws Exception {
-		System.out.println("data not found on cache, getting credential from API");
+		logger.info("accesstoken not found on cache, getting from API");
 		final HttpPost method = createPostMethod(PropertyFinder.getPropertyValue(CREDENTIAL_URL), getBasicHeaders());
 		method.setEntity(getCredentialRequestEntity());
-		CloseableHttpResponse response = httpClient.execute(method);
-		return gson.fromJson(new InputStreamReader(response.getEntity().getContent()), CredentialResponse.class);
+		final CloseableHttpResponse response = httpClient.execute(method);
+		final CredentialResponse credentialResponse = gson.fromJson(new InputStreamReader(response.getEntity().getContent()), CredentialResponse.class);
+		response.close();
+		return credentialResponse;
 	}
 	
 	private HttpEntity getCredentialRequestEntity() throws UnsupportedEncodingException {

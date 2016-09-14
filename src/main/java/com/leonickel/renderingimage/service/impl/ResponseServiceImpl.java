@@ -3,6 +3,8 @@ package com.leonickel.renderingimage.service.impl;
 import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Singleton;
 import com.leonickel.renderingimage.model.Still;
@@ -11,6 +13,8 @@ import com.leonickel.renderingimage.service.ResponseService;
 
 @Singleton
 public class ResponseServiceImpl implements ResponseService {
+	
+	private Logger logger = LoggerFactory.getLogger(ResponseServiceImpl.class);
 
 	@Override
 	public byte[] getResponse(VideoDetails videoDetails, String heightDimension) throws Exception {
@@ -19,6 +23,7 @@ public class ResponseServiceImpl implements ResponseService {
 		}
 		for(Still still : videoDetails.getStills()) {
 			if(still.getUrl().contains(getHeighDimensionFormat(heightDimension))) {
+				logger.info("returning filtered image from still, heighDimension: [{}], image uri: [{}]", heightDimension, still.getUrl());
 				return IOUtils.toByteArray(new URL("http:" + still.getUrl()));
 			}
 		}
@@ -40,7 +45,7 @@ public class ResponseServiceImpl implements ResponseService {
 //		System.out.println(aaa.length);
 //		return bb.array();
 
-		return null;
+		return getDefaultImage(videoDetails);
 	}
 	
 	private String getHeighDimensionFormat(String heightDimension) {
@@ -48,9 +53,7 @@ public class ResponseServiceImpl implements ResponseService {
 	}
 	
 	private byte[] getDefaultImage(VideoDetails videoDetails) throws Exception {
+		logger.info("returning default image from still, image uri: [{}]", videoDetails.getStills()[0].getUrl());
 		return IOUtils.toByteArray(new URL("http:" + videoDetails.getStills()[0].getUrl()));
 	}
-	
-	
-	
 }
