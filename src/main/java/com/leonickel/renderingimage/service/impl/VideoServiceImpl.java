@@ -20,4 +20,14 @@ public class VideoServiceImpl implements VideoService {
 	public VideoDetailDTO getVideo(String videoId, String timestamp) {
 		return videoDAO.getVideo(videoId, timestamp, credentialDAO.getCredential().getAccessToken());
 	}
+	
+	//For unit testing purposes
+	public void setCredentialDAO(CredentialDAO credentialDAO) {
+		this.credentialDAO = credentialDAO;
+	}
+	
+	//For unit testing purposes
+	public void setVideoDAO(VideoDAO videoDAO) {
+		this.videoDAO = videoDAO;
+	}
 }

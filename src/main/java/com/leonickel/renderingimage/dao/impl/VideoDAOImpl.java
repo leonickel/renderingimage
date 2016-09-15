@@ -1,6 +1,6 @@
 package com.leonickel.renderingimage.dao.impl;
 
-import static com.leonickel.renderingimage.util.DefaultProperties.HTTP_TIMEOUT_CONNECTION;
+import static com.leonickel.renderingimage.util.DefaultProperties.*;
 import static com.leonickel.renderingimage.util.DefaultProperties.HTTP_TIMEOUT_READ;
 import static com.leonickel.renderingimage.util.DefaultProperties.VIDEO_URL;
 
@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.inject.Singleton;
 import com.leonickel.renderingimage.dao.VideoDAO;
-import com.leonickel.renderingimage.exception.InvalidTimestampProviedException;
+import com.leonickel.renderingimage.exception.InvalidTimestampProvidedException;
 import com.leonickel.renderingimage.exception.NoVideoFoundException;
 import com.leonickel.renderingimage.exception.VideoRetrievalException;
 import com.leonickel.renderingimage.model.StillImageDTO;
@@ -43,7 +43,9 @@ public class VideoDAOImpl implements VideoDAO {
 	public VideoDetailDTO getVideo(String videoId, String timestamp, String authentication) {
 		HttpGet method = null;
 		CloseableHttpResponse response = null;
-		final String url = PropertyFinder.getPropertyValue(VIDEO_URL).replace("{VIDEO_MANAGER_ID}", "5").replace("{VIDEO_ID}", videoId);
+		final String url = PropertyFinder.getPropertyValue(VIDEO_URL)
+				.replace("{VIDEO_MANAGER_ID}", PropertyFinder.getPropertyValue(VIDEO_MANAGER_ID))
+				.replace("{VIDEO_ID}", videoId);
 		try {
 			method = createGetMethod(url, getAuthenticationHeader(authentication));
 			logger.info("executing get method, uri: [{}]", method.getURI());
@@ -85,7 +87,7 @@ public class VideoDAOImpl implements VideoDAO {
 		}
 		if(filteredStills.size() == 0) {
 			logger.error("invalid timestamp provided for video, title: [{}] timestamp: [{}]", videoDetails.getTitle(), timestamp);
-			throw new InvalidTimestampProviedException("invalid timestamp provided for video"); 
+			throw new InvalidTimestampProvidedException("invalid timestamp provided for video"); 
 		}
 		videoDetails.setStills(filteredStills.toArray(new StillImageDTO[filteredStills.size()]));
 		return videoDetails;

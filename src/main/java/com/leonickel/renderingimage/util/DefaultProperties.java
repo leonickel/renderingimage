@@ -9,6 +9,7 @@ public enum DefaultProperties {
 	CREDENTIAL_URL_USERNAME("movingimage.credential.url.username", "Joing1930@superrito.com"),
 	CREDENTIAL_URL_PASSWORD("movingimage.credential.url.password", "2JmLUGu"),
 	
+	VIDEO_MANAGER_ID("movingimage.video.manager.id", "5"),
 	VIDEO_URL("movingimage.credential.url", "https://api-qa.video-cdn.net/v1/vms/{VIDEO_MANAGER_ID}/videos/{VIDEO_ID}"),
 	
 	IMAGE_CONTENT_TYPE("movingimage.image.content-type", "image/jpeg"),

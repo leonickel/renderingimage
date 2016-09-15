@@ -1,13 +1,13 @@
 package com.leonickel.renderingimage.exception;
 
-public class InvalidTimestampProviedException extends RuntimeException {
+public class InvalidTimestampProvidedException extends RuntimeException {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2153919975765895238L;
 
-	public InvalidTimestampProviedException(String message) {
+	public InvalidTimestampProvidedException(String message) {
 		super(message);
 	}
 }

@@ -17,7 +17,7 @@ import org.apache.http.HttpStatus;
 
 import com.google.inject.Inject;
 import com.leonickel.renderingimage.exception.CredentialException;
-import com.leonickel.renderingimage.exception.InvalidTimestampProviedException;
+import com.leonickel.renderingimage.exception.InvalidTimestampProvidedException;
 import com.leonickel.renderingimage.exception.NoVideoFoundException;
 import com.leonickel.renderingimage.exception.VideoRetrievalException;
 import com.leonickel.renderingimage.model.VideoDetailDTO;
@@ -48,7 +48,7 @@ public class ImageServiceRest {
 			return dimension != null && !dimension.isEmpty() ? writeImageResponse(videoDetails, dimension) : writeHtmlResponse(videoDetails);
 		} catch (NoVideoFoundException e) {
 			return writeErrorResponse(e.getMessage(), HttpStatus.SC_NOT_FOUND);
-		} catch (InvalidTimestampProviedException e) {
+		} catch (InvalidTimestampProvidedException e) {
 			return writeErrorResponse(e.getMessage(), HttpStatus.SC_BAD_REQUEST);
 		} catch (CredentialException e) {
 			return writeErrorResponse(e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR);
