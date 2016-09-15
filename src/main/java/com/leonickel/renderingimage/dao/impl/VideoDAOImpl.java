@@ -51,7 +51,7 @@ public class VideoDAOImpl implements VideoDAO {
 			logger.info("executing get method, uri: [{}]", method.getURI());
 			response = httpClient.execute(method);
 			if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-				logger.error("invalid or not found video id provided, videoId: [{}]", videoId);
+				logger.error("invalid or not found video id, videoId: [{}]", videoId);
 				throw new NoVideoFoundException("invalid or not found video id provided");
 			}
 

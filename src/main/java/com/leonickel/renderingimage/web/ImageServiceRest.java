@@ -13,10 +13,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import org.apache.http.HttpStatus;
+import static org.apache.http.HttpStatus.*;
 
 import com.google.inject.Inject;
 import com.leonickel.renderingimage.exception.CredentialException;
+import com.leonickel.renderingimage.exception.ImageBytesRetrievalException;
 import com.leonickel.renderingimage.exception.InvalidTimestampProvidedException;
 import com.leonickel.renderingimage.exception.NoVideoFoundException;
 import com.leonickel.renderingimage.exception.VideoRetrievalException;
@@ -41,25 +42,27 @@ public class ImageServiceRest {
 	public Response renderStillImages(@PathParam("videoId") String videoId, @PathParam("timestamp") String timestamp,
 			@QueryParam("dimension") String dimension) throws Exception {
 		if(!isValidTimestamp(timestamp)) {
-			return writeErrorResponse("Timestamp must be a valid and existing number", HttpStatus.SC_BAD_REQUEST);
+			return writeErrorResponse("Timestamp must be a valid and existing number", SC_BAD_REQUEST);
 		}
 		try {
 			final VideoDetailDTO videoDetails = videoService.getVideo(videoId, timestamp);
 			return dimension != null && !dimension.isEmpty() ? writeImageResponse(videoDetails, dimension) : writeHtmlResponse(videoDetails);
 		} catch (NoVideoFoundException e) {
-			return writeErrorResponse(e.getMessage(), HttpStatus.SC_NOT_FOUND);
+			return writeErrorResponse(e.getMessage(), SC_NOT_FOUND);
 		} catch (InvalidTimestampProvidedException e) {
-			return writeErrorResponse(e.getMessage(), HttpStatus.SC_BAD_REQUEST);
+			return writeErrorResponse(e.getMessage(), SC_BAD_REQUEST);
 		} catch (CredentialException e) {
-			return writeErrorResponse(e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR);
+			return writeErrorResponse(e.getMessage(), SC_INTERNAL_SERVER_ERROR);
 		} catch (VideoRetrievalException e) {
-			return writeErrorResponse(e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR);
+			return writeErrorResponse(e.getMessage(), SC_INTERNAL_SERVER_ERROR);
+		} catch (ImageBytesRetrievalException e) {
+			return writeErrorResponse(e.getMessage(), SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 	
 	private Response writeImageResponse(VideoDetailDTO videoDetails, String dimension) throws Exception {
 		return Response
-				.status(HttpStatus.SC_OK)
+				.status(SC_OK)
 				.header("Content-Type", PropertyFinder.getPropertyValue(IMAGE_CONTENT_TYPE))
 				.entity(responseService.getImageResponse(videoDetails, dimension))
 				.build();
@@ -67,7 +70,7 @@ public class ImageServiceRest {
 	
 	private Response writeHtmlResponse(VideoDetailDTO videoDetails) throws Exception {
 		return Response
-				.status(HttpStatus.SC_OK)
+				.status(SC_OK)
 				.header("Content-Type", PropertyFinder.getPropertyValue(HTML_CONTENT_TYPE))
 				.entity(responseService.getHtmlResponse(videoDetails))
 				.build();
