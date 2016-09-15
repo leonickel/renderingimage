@@ -12,12 +12,8 @@ public enum DefaultProperties {
 	VIDEO_URL("movingimage.credential.url", "https://api-qa.video-cdn.net/v1/vms/{VIDEO_MANAGER_ID}/videos/{VIDEO_ID}"),
 	
 	IMAGE_CONTENT_TYPE("movingimage.image.content-type", "image/jpeg"),
-	
-//	GO_EURO_URL_MAX_RETRY("goeuro.url.max-retry", "3"),
-//	
-//	CSV_FILE_NAME("csv.file-name", "result.csv"),
-//	CSV_OUTPUT_PATH("csv.output-path", "./"),
-//	CSV_SEPARATOR_VALUE("csv.separator-value", ",")
+	HTML_CONTENT_TYPE("movingimage.html.content-type", "text/html"),
+	ERROR_CONTENT_TYPE("movingimage.error.content-type", "text/plain"),
 	;
 	
 	private String property;

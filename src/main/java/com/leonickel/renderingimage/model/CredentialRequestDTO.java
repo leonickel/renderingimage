@@ -1,6 +1,6 @@
 package com.leonickel.renderingimage.model;
 
-public class CredentialRequest {
+public class CredentialRequestDTO {
 
 	private String username;
 	private String password;

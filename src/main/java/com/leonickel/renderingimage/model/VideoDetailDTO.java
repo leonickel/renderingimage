@@ -1,10 +1,10 @@
 package com.leonickel.renderingimage.model;
 
-public class VideoDetails {
+public class VideoDetailDTO {
 	
 	private String id;
 	private String title;
-	private Still[] stills;
+	private StillImageDTO[] stills;
 	
 	public void setId(String id) {
 		this.id = id;
@@ -22,13 +22,11 @@ public class VideoDetails {
 		this.title = title;
 	}
 
-	public Still[] getStills() {
+	public StillImageDTO[] getStills() {
 		return stills;
 	}
 
-	public void setStills(Still[] stills) {
+	public void setStills(StillImageDTO[] stills) {
 		this.stills = stills;
 	}
-
-	
 }

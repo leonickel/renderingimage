@@ -1,8 +1,8 @@
 package com.leonickel.renderingimage.service;
 
-import com.leonickel.renderingimage.model.VideoDetails;
+import com.leonickel.renderingimage.model.VideoDetailDTO;
 
 public interface VideoService {
 
-	VideoDetails getVideo(String videoId, String timestamp) throws Exception;
+	VideoDetailDTO getVideo(String videoId, String timestamp) throws Exception;
 }

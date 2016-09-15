@@ -1,8 +1,10 @@
 package com.leonickel.renderingimage.service;
 
-import com.leonickel.renderingimage.model.VideoDetails;
+import com.leonickel.renderingimage.model.VideoDetailDTO;
 
 public interface ResponseService {
 
-	byte[] getResponse(VideoDetails videoDetails, String dimension) throws Exception;
+	byte[] getImageResponse(VideoDetailDTO videoDetails, String dimension) throws Exception;
+	
+	String getHtmlResponse(VideoDetailDTO videoDetails) throws Exception;
 }

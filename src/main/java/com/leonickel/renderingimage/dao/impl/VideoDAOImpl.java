@@ -22,8 +22,8 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.inject.Singleton;
 import com.leonickel.renderingimage.dao.VideoDAO;
-import com.leonickel.renderingimage.model.Still;
-import com.leonickel.renderingimage.model.VideoDetails;
+import com.leonickel.renderingimage.model.StillImageDTO;
+import com.leonickel.renderingimage.model.VideoDetailDTO;
 import com.leonickel.renderingimage.util.PropertyFinder;
 
 @Singleton
@@ -34,27 +34,26 @@ public class VideoDAOImpl implements VideoDAO {
 	private Logger logger = LoggerFactory.getLogger(VideoDAOImpl.class);
 	
 	@Override
-	public VideoDetails getVideo(String videoId, String timestamp, String authentication) throws Exception {
-		//https://api-qa.video-cdn.net/v1/vms/{VIDEO_MANAGER_ID}/videos/{VIDEO_ID}
-		String url = PropertyFinder.getPropertyValue(VIDEO_URL).replace("{VIDEO_MANAGER_ID}", "5").replace("{VIDEO_ID}", videoId);
+	public VideoDetailDTO getVideo(String videoId, String timestamp, String authentication) throws Exception {
+		final String url = PropertyFinder.getPropertyValue(VIDEO_URL).replace("{VIDEO_MANAGER_ID}", "5").replace("{VIDEO_ID}", videoId);
 		final HttpGet method = createGetMethod(url, getAuthenticationHeader(authentication));
 		logger.info("executing get method, uri: [{}]", method.getURI());
 		final CloseableHttpResponse response = httpClient.execute(method);
 		logger.info("sucessfull get method executed");
-		final VideoDetails videoDetails = gson.fromJson(new InputStreamReader(response.getEntity().getContent()), VideoDetails.class);
+		final VideoDetailDTO videoDetails = gson.fromJson(new InputStreamReader(response.getEntity().getContent()), VideoDetailDTO.class);
 		response.close();
 		return filterStillsByTimestamp(videoDetails, timestamp);
 	}
 	
-	private VideoDetails filterStillsByTimestamp(VideoDetails videoDetails, String timestamp) {
-		final List<Still> filteredStills = new ArrayList<Still>();
-		for(Still still : videoDetails.getStills()) {
+	private VideoDetailDTO filterStillsByTimestamp(VideoDetailDTO videoDetails, String timestamp) {
+		final List<StillImageDTO> filteredStills = new ArrayList<StillImageDTO>();
+		for(StillImageDTO still : videoDetails.getStills()) {
 			final String info = still.getUrl().substring(still.getUrl().lastIndexOf("/")+1);
 			if(info.split("\\.")[1].equals(timestamp)) {
 				filteredStills.add(still);
 			}
 		}
-		videoDetails.setStills(filteredStills.toArray(new Still[filteredStills.size()]));
+		videoDetails.setStills(filteredStills.toArray(new StillImageDTO[filteredStills.size()]));
 		return videoDetails;
 	}
 	

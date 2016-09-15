@@ -1,6 +1,6 @@
 package com.leonickel.renderingimage.model;
 
-public class CredentialResponse {
+public class CredentialResponseDTO {
 
 	private String accessToken;
 	private String refreshToken;
@@ -24,6 +24,4 @@ public class CredentialResponse {
 	public void setValidForVideoManager(int validForVideoManager) {
 		this.validForVideoManager = validForVideoManager;
 	}
-	
-	
 }

@@ -1,8 +1,8 @@
 package com.leonickel.renderingimage.dao;
 
-import com.leonickel.renderingimage.model.CredentialResponse;
+import com.leonickel.renderingimage.model.CredentialResponseDTO;
 
 public interface CredentialDAO {
 
-	CredentialResponse getCredential() throws Exception;
+	CredentialResponseDTO getCredential() throws Exception;
 }
