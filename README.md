@@ -49,14 +49,21 @@ When the lines above appear in the console the application is up and running to 
 * http://localhost:8080/renderingimage/image/DoVg8GbZoWyPp72YmaaFmz/2766?dimension=288 
 
 In the example above, the provided parameters were:
+```console
 videoId = DoVg8GbZoWyPp72YmaaFmz
 timestamp = 2766
 dimension = 288
-In this case, system will return just the still image with dimension 288p of height
+```
+
+In this case, system will return the still image with dimension 288p of height only.
 
 * http://localhost:8080/renderingimage/image/DoVg8GbZoWyPp72YmaaFmz/2766
 
-In this case the system will return all still images dimension for the informed timestamp and videoId
+In this case the system will return all still images dimension for the informed timestamp and videoId.
+
+* http://localhost:8080/renderingimage/image/DoVg8GbZoWyPp72YmaaFmz/2766?dimension=12345
+
+In this case the dimension provided is invalid, so the system will return thumbnail image for the still image only.
 
 ## Alternative flows
 Currently system is designed to validate the following corner cases:
