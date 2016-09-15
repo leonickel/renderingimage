@@ -17,7 +17,7 @@ public class VideoServiceImpl implements VideoService {
 	private VideoDAO videoDAO;
 	
 	@Override
-	public VideoDetailDTO getVideo(String videoId, String timestamp) throws Exception {
+	public VideoDetailDTO getVideo(String videoId, String timestamp) {
 		return videoDAO.getVideo(videoId, timestamp, credentialDAO.getCredential().getAccessToken());
 	}
 }

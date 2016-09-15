@@ -16,6 +16,10 @@ import javax.ws.rs.core.Response;
 import org.apache.http.HttpStatus;
 
 import com.google.inject.Inject;
+import com.leonickel.renderingimage.exception.CredentialException;
+import com.leonickel.renderingimage.exception.InvalidTimestampProviedException;
+import com.leonickel.renderingimage.exception.NoVideoFoundException;
+import com.leonickel.renderingimage.exception.VideoRetrievalException;
 import com.leonickel.renderingimage.model.VideoDetailDTO;
 import com.leonickel.renderingimage.service.ResponseService;
 import com.leonickel.renderingimage.service.VideoService;
@@ -39,8 +43,18 @@ public class ImageServiceRest {
 		if(!isValidTimestamp(timestamp)) {
 			return writeErrorResponse("Timestamp must be a valid and existing number", HttpStatus.SC_BAD_REQUEST);
 		}
-		final VideoDetailDTO videoDetails = videoService.getVideo(videoId, timestamp);
-		return dimension != null && !dimension.isEmpty() ? writeImageResponse(videoDetails, dimension) : writeHtmlResponse(videoDetails);
+		try {
+			final VideoDetailDTO videoDetails = videoService.getVideo(videoId, timestamp);
+			return dimension != null && !dimension.isEmpty() ? writeImageResponse(videoDetails, dimension) : writeHtmlResponse(videoDetails);
+		} catch (NoVideoFoundException e) {
+			return writeErrorResponse(e.getMessage(), HttpStatus.SC_NOT_FOUND);
+		} catch (InvalidTimestampProviedException e) {
+			return writeErrorResponse(e.getMessage(), HttpStatus.SC_BAD_REQUEST);
+		} catch (CredentialException e) {
+			return writeErrorResponse(e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR);
+		} catch (VideoRetrievalException e) {
+			return writeErrorResponse(e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	private Response writeImageResponse(VideoDetailDTO videoDetails, String dimension) throws Exception {

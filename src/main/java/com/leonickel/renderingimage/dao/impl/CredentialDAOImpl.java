@@ -6,10 +6,12 @@ import static com.leonickel.renderingimage.util.DefaultProperties.CREDENTIAL_URL
 import static com.leonickel.renderingimage.util.DefaultProperties.HTTP_TIMEOUT_CONNECTION;
 import static com.leonickel.renderingimage.util.DefaultProperties.HTTP_TIMEOUT_READ;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpEntity;
@@ -29,6 +31,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.gson.Gson;
 import com.google.inject.Singleton;
 import com.leonickel.renderingimage.dao.CredentialDAO;
+import com.leonickel.renderingimage.exception.CredentialException;
 import com.leonickel.renderingimage.model.CredentialRequestDTO;
 import com.leonickel.renderingimage.model.CredentialResponseDTO;
 import com.leonickel.renderingimage.util.PropertyFinder;
@@ -46,26 +49,36 @@ public class CredentialDAOImpl implements CredentialDAO {
 	            .expireAfterWrite(5, TimeUnit.MINUTES) // cache will expire after 5 minutes of access -> In production environment this setting should be a property from external file
 	            .build(new CacheLoader<String, CredentialResponseDTO>(){ // build the cacheloader
 					@Override
-					public CredentialResponseDTO load(String credential) throws Exception {
+					public CredentialResponseDTO load(String credential) {
 						return loadCredential(credential);
 					} 
 	            });
 	
 	
 	@Override
-	public CredentialResponseDTO getCredential() throws Exception {
+	public CredentialResponseDTO getCredential() {
 		logger.info("getting acesstoken from cache");
-		return credentialCache.get("credential");
+		try {
+			return credentialCache.get("credential");
+		} catch (ExecutionException e) {
+			logger.error("unknow error on getting accesstoken from cache, falling back to API");
+			return loadCredential("credential");
+		}
 	}
 	
-	private CredentialResponseDTO loadCredential(String credential) throws Exception {
+	private CredentialResponseDTO loadCredential(String credential) {
 		logger.info("accesstoken not found on cache, getting from API");
 		final HttpPost method = createPostMethod(PropertyFinder.getPropertyValue(CREDENTIAL_URL), getBasicHeaders());
-		method.setEntity(getCredentialRequestEntity());
-		final CloseableHttpResponse response = httpClient.execute(method);
-		final CredentialResponseDTO credentialResponse = gson.fromJson(new InputStreamReader(response.getEntity().getContent()), CredentialResponseDTO.class);
-		response.close();
-		return credentialResponse;
+		try {
+			method.setEntity(getCredentialRequestEntity());
+			final CloseableHttpResponse response = httpClient.execute(method);
+			final CredentialResponseDTO credentialResponse = gson.fromJson(new InputStreamReader(response.getEntity().getContent()), CredentialResponseDTO.class);
+			response.close();
+			return credentialResponse;
+		} catch (IOException e) {
+			logger.error("error on calling credential API, error: [{}]", e.getMessage());
+			throw new CredentialException("error on calling credential API");
+		}
 	}
 	
 	private HttpEntity getCredentialRequestEntity() throws UnsupportedEncodingException {

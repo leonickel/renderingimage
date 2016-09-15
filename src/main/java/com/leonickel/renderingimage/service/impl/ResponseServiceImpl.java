@@ -43,7 +43,7 @@ public class ResponseServiceImpl implements ResponseService {
 	}
 
 	private byte[] getDefaultImage(VideoDetailDTO videoDetails) throws Exception {
-		logger.info("returning default image from still, image uri: [{}]", videoDetails.getStills()[0].getUrl());
+		logger.info("invalid dimension provided, returning thumbnail still image from video, image uri: [{}]", videoDetails.getStills()[0].getUrl());
 		return IOUtils.toByteArray(new URL("http:" + videoDetails.getStills()[0].getUrl()));
 	}
 

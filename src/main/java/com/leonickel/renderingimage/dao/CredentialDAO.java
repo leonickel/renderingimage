@@ -4,5 +4,5 @@ import com.leonickel.renderingimage.model.CredentialResponseDTO;
 
 public interface CredentialDAO {
 
-	CredentialResponseDTO getCredential() throws Exception;
+	CredentialResponseDTO getCredential();
 }
