@@ -33,7 +33,7 @@ The system was designed to be simple but at the same time using approaches to he
 * Logging - every production application must have logging for troubleshooting and to know used parameters on each flow and so on.
 * Exceptions handling - the code is supported by an exception mechanism controlling the flow. This approach needs more code (creating custom exceptions and check all exceptions) but lets the system more robust.
 * IoC - Using IoC (Inversion of Control) mechanism helps to not creating a lot of objects in memory and avoiding large footprints besides code gets simpler as well. 
-* Unit tests - To make sure all the corner cases were coverage including code coverage. The application has 88% of code coverage by unit tests ;)
+* Unit tests - To make sure all the corner cases were coverage including code coverage. The application has 11 unit tests at this moment covering DAOs and Service layers ;)
 
 ## How to run
 The system produces a war file and can be easily started by calling embedded jetty into maven, so to run you just need Maven and Java installed on machine. After setting up them, just run the following command:
